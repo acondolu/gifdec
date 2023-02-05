@@ -21,8 +21,13 @@ typedef struct gd_GCE {
     int transparency;
 } gd_GCE;
 
+typedef struct InMemory {
+    void *buf;
+    off_t offset;
+} InMemory;
+
 typedef struct gd_GIF {
-    int fd;
+    InMemory fd;
     off_t anim_start;
     uint16_t width, height;
     uint16_t depth;
@@ -42,7 +47,7 @@ typedef struct gd_GIF {
     uint8_t *canvas, *frame;
 } gd_GIF;
 
-gd_GIF *gd_open_gif(const char *fname);
+gd_GIF *gd_open_gif(void *buf);
 int gd_get_frame(gd_GIF *gif);
 void gd_render_frame(gd_GIF *gif, uint8_t *buffer);
 int gd_is_bgcolor(gd_GIF *gif, uint8_t color[3]);

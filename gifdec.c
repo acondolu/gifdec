@@ -4,11 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-// #include <unistd.h>
-
 #define MIN(A, B) ((A) < (B) ? (A) : (B))
 #define MAX(A, B) ((A) > (B) ? (A) : (B))
 
@@ -24,9 +19,8 @@ typedef struct Table {
     Entry *entries;
 } Table;
 
-void read(InMemory fd, void* buf, size_t count) {
-    memcpy(buf, fd.buf + fd.offset, count);
-}
+// void read(InMemory *fd, void* buf, size_t count) {
+#define read(fd, dbuf, count) (memcpy(dbuf, fd.buf + fd.offset, count))
 
 off_t lseek(InMemory *fd, off_t offset, int whence) {
     switch (whence)  {
@@ -45,7 +39,7 @@ read_num(InMemory fd)
     return bytes[0] + (((uint16_t) bytes[1]) << 8);
 }
 
-gd_GIF *gd_open_gif(void *buf) {
+gd_GIF *gd_open_gif(uint8_t *buf) {
     uint8_t sigver[3];
     uint16_t width, height, depth;
     uint8_t fdsz, bgidx, aspect;
@@ -524,5 +518,5 @@ gd_rewind(gd_GIF *gif)
 void
 gd_close_gif(gd_GIF *gif)
 {
-    free(gif->fd.buf);
+    free(gif);
 }
